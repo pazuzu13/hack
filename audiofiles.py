@@ -9,7 +9,7 @@ hundred_points_sound = pygame.mixer.Sound("sounds/100points.mp3")  #звук в�
 pause_sound = pygame.mixer.Sound("sounds/pause.mp3")               #звук кнопки "пауза"
 gameover_sound = pygame.mixer.Sound("sounds/game_over.mp3")        #звук проигрыша
 
-playlist = ["music/st1.mp3"]  #плейлист с музыкой игры
+playlist = ["music/Super_Mario_-_muzyka_iz_igry_62757355.mp3"]  #плейлист с музыкой игры
 
 pygame.mixer.music.set_volume(0.4)        #установка громкости
 pygame.mixer.music.load(playlist[0])      #выбор трека st1.mp3

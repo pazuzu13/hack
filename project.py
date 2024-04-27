@@ -43,10 +43,10 @@ def check_collision_enemies(object, enemies_list):
             running = False
 
 #проверка 
-def check_collision_collectibles(object, collectibles_list, score):
+def check_collision_collectibles(Player, collectibles_list, score):
     #если object касается collictible 
     for collectible in collectibles_list:
-        if object.rect.colliderect(collectible.rect):
+        if Player.rect.colliderect(collectible.rect):
             #убираем этот объект из всех групп
             collectible.kill()
             #убираем этот объект из списка (чтобы не было проверки коллизии)
@@ -59,8 +59,8 @@ def restart_game(dis):
     gameover_sound.play() 
 
     #кнопки в меню проигрыша\рестарта
-    yes_button = Button("images/yes.png", 200, 500)
-    no_button = Button("images/no.png", 600, 500)
+    yes_button = Button("images/yes.png", 450, 420)
+    no_button = Button("images/no.png", 650, 420)
     
     dis.blit(background_the_end, (0, 0))
     button_init(dis, [yes_button, no_button])
@@ -82,22 +82,23 @@ def restart_game(dis):
                     return(False)
 
 def main_menu(screen):
+    screen.blit(blur_menu, (0, 0))
     global is_music_playing
     pygame.mixer.music.rewind() #!!!!        #перезапуск музыки, если играет
     playorpause()               #!!!!        #включение либо выключение музыки
     screen.blit(background_menu, (0, 0))   #отрисовка фона меню
-
+   
     #кнопки в главном меню
-    start_button = Button("images/start_button.png", 400, 154)
-    quit_button = Button("images/quit_button.png", 400, 380)
+    start_button = Button("images/start_button.png", 550, 205)
+    quit_button = Button("images/quit_button.png", 550, 350)
 
     #кнопки управления музыкой, зависят от переменной is_music_playing
     if is_music_playing == True:
-        msc_off_button = Button("images/music_off.png", 468, 268)
-        msc_on_button = Button("images/music_on_selected.png", 335, 268)
+        msc_off_button = Button("images/music_off.png", 591, 280)
+        msc_on_button = Button("images/music_on_selected.png", 511, 280)
     else:
-        msc_off_button = Button("images/music_off_selected.png", 468, 268)
-        msc_on_button = Button("images/music_on.png", 335, 268)
+        msc_off_button = Button("images/music_off_selected.png", 290, 175)
+        msc_on_button = Button("images/music_on.png", 209, 175)
    
     #группа кнопок меню
     buttons = [start_button, quit_button, msc_on_button, msc_off_button]
@@ -141,21 +142,26 @@ def main_menu(screen):
 
         pygame.time.delay(10)
 
-def play_game(screen):
+
+def play_game(screen):          
+    screen.blit(background_image, (0, 0))
+    
     #создаем счетчик частоты кадров и очков
     clock = pygame.time.Clock()
     score = 0
     #создаем игрока, платформы, врагов и то, что будем собирать в игре
-    player = Player(50, 50)
-    platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(50, 150, 100, 20), Platform(100, 350, 100, 20), Platform(250, 170, 100, 20)]
+    player = Player(400, 235)
+    platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(700, 355, 100, 20), Platform(100, 350, 100, 20), Platform(400, 235, 100, 20), Platform(950, 223, 100, 20)]
     enemies_list = [Enemy(120, 315)]
-    collectibles_list = [Collectible(280, 135)]
+    collectibles_list = [Collectible(970, 210)]
+    collectibles_list = [Collectible(670, 335)]
+
 
     #счёт игры
     font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
     score_text = font.render("Счёт: 0", True, BLACK) # выбор цвета и текст
     score_rect = score_text.get_rect() # создание хитбокса текста
-    score_rect.topleft = (WIDTH // 2, 100) # расположение хитбокса\текста на экране
+    score_rect.topleft = (511, 40) # расположение хитбокса\текста на экране
 
     #создаем групп спрайтов
     player_and_platforms = pygame.sprite.Group()
@@ -202,7 +208,7 @@ def play_game(screen):
         enemies.update()
 
         #отрисовываем фон, платформы, врагов и собираемые предметы
-        screen.blit(background_image, (0, 0)) 
+        screen.blit(background_image, (0, 0))
         player_and_platforms.draw(screen)
         enemies.draw(screen)
         collectibles.draw(screen)
@@ -215,7 +221,7 @@ def play_game(screen):
         #обновление счёта на экране
         score_text = font.render("Счёт: " + str(score), True, BLACK)
         screen.blit(score_text, score_rect)
-
+        
         #обновление экрана и установка частоты кадров
         pygame.display.update()
         clock.tick(60)
