@@ -1,4 +1,5 @@
 import pygame
+import random
 from const import *
 from classes import *
 from interface import *
@@ -43,7 +44,7 @@ def check_collision_enemies(object, enemies_list):
             running = False
 
 #проверка 
-def check_collision_collectibles(Player, collectibles_list, score):
+def check_collision_collectibles(Player, collectibles_list):
     #если object касается collictible 
     for collectible in collectibles_list:
         if Player.rect.colliderect(collectible.rect):
@@ -52,7 +53,10 @@ def check_collision_collectibles(Player, collectibles_list, score):
             #убираем этот объект из списка (чтобы не было проверки коллизии)
             collectibles_list.remove(collectible)
             #прибавляем одно очко
-            score += 1
+            return(True)
+        else:
+            return(False)
+            
 
 def restart_game(dis):
     pygame.mixer.music.stop() 
@@ -145,23 +149,14 @@ def main_menu(screen):
 
 def play_game(screen):          
     screen.blit(background_image, (0, 0))
-    
+    global score_count
     #создаем счетчик частоты кадров и очков
     clock = pygame.time.Clock()
-    score = 0
     #создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(400, 235)
-    platforms_list = [Platform(0, HEIGHT-25, WIDTH, 50), Platform(700, 355, 100, 20), Platform(100, 350, 100, 20), Platform(400, 235, 100, 20), Platform(950, 223, 100, 20)]
+    platforms_list = [Platform(0, HEIGHT-25), Platform(700, 355), Platform(100, 350), Platform(400, 235), Platform(950, 223)]
     enemies_list = [Enemy(120, 315)]
-    collectibles_list = [Collectible(970, 210)]
-    collectibles_list = [Collectible(670, 335)]
-
-
-    #счёт игры
-    font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
-    score_text = font.render("Счёт: 0", True, BLACK) # выбор цвета и текст
-    score_rect = score_text.get_rect() # создание хитбокса текста
-    score_rect.topleft = (511, 40) # расположение хитбокса\текста на экране
+    collectibles_list = [Collectible(970, 210), Collectible(670, 335)]
 
     #создаем групп спрайтов
     player_and_platforms = pygame.sprite.Group()
@@ -183,11 +178,22 @@ def play_game(screen):
 
     global running
     running == True
+    start = pygame.time.get_ticks()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-
+        new_time = pygame.time.get_ticks()      #заканчиваем отсчёт 10 секунд
+        if (new_time - start) > 2000:          #каждые 10 секунд выполняем следующие команды
+            platforms_list[0].kill
+            platforms_list.pop(0)
+            platforms_list.append(Platform(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+            player_and_platforms.remove(platforms_list[0])
+            player_and_platforms.add(platforms_list[-1])
+            #hundred_points_sound.play()     
+            pygame.display.update()
+            start = pygame.time.get_ticks()     #начинаем отсчёт 10 секунд заново
+            
         #проверяем нажатие на клавиши для перемещения
         keys = pygame.key.get_pressed()
         player.x_velocity = 0
@@ -212,14 +218,18 @@ def play_game(screen):
         player_and_platforms.draw(screen)
         enemies.draw(screen)
         collectibles.draw(screen)
-
+        global score_count
         #проверяем все возможные коллизии
         check_collision_platforms(player, platforms_list)
         check_collision_enemies(player, enemies_list)
-        check_collision_collectibles(player, collectibles_list, score)
-
+        if check_collision_collectibles(player, collectibles_list):
+            score_count += 1
+        #счёт игры
+        font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
         #обновление счёта на экране
-        score_text = font.render("Счёт: " + str(score), True, BLACK)
+        score_text = font.render("Счёт: " + str(score_count), True, BLACK)
+        score_rect = score_text.get_rect() # создание хитбокса текста
+        score_rect.topleft = (511, 40) # расположение хитбокса\текста на экране
         screen.blit(score_text, score_rect)
         
         #обновление экрана и установка частоты кадров
@@ -230,6 +240,7 @@ def play_game(screen):
 #игровой цикл
 running = True
 menu = True
+score_count = 0
 is_music_playing = True
 #создаем экран
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

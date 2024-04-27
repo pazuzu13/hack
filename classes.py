@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
 
         #создание изображения для спрайта
-        self.image = pygame.image.load("images/spider-man.png")
+        self.image = pygame.image.load("images/spider-man.png").convert_alpha()
         #self.image = pygame.Surface((32, 32))
         #self.image.fill(GREEN)
 
@@ -37,7 +37,7 @@ class Enemy(pygame.sprite.Sprite):
         #создание изображения для спрайта
         #self.image = pygame.Surface((32, 32))
         #self.image.fill(RED)
-        self.image = pygame.image.load("images/tapok.png")
+        self.image = pygame.image.load("images/tapok.png").convert_alpha()
 
         #начальная позиция по Х, нужна для патрулирования
         self.x_start = x
@@ -68,7 +68,7 @@ class Collectible(pygame.sprite.Sprite):
         super().__init__()
 
         #создание изображения для спрайта
-        self.image = pygame.image.load("images/muh.png")
+        self.image = pygame.image.load("images/muh.png").convert_alpha()
         #self.image = pygame.Surface((16, 16))
         #self.image.fill(GOLD)
 
@@ -79,12 +79,12 @@ class Collectible(pygame.sprite.Sprite):
 
 #класс для платформы
 class Platform(pygame.sprite.Sprite):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y):
         super().__init__()
         #создание изображения для спрайта
         #self.image = pygame.Surface((width, height))
         #self.image.fill(BLUE)
-        self.image = pygame.image.load("images/cloud.png")
+        self.image = pygame.image.load("images/cloud.png").convert_alpha()
 
         #создание хитбокса для спрайта
         self.rect = self.image.get_rect()
