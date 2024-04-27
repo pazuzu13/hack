@@ -59,8 +59,8 @@ def restart_game(dis):
     gameover_sound.play() 
 
     #кнопки в меню проигрыша\рестарта
-    yes_button = Button("images/yes.png", 150, 350)
-    no_button = Button("images/no.png", 350, 350)
+    yes_button = Button("images/yes.png", 200, 500)
+    no_button = Button("images/no.png", 600, 500)
     
     dis.blit(background_the_end, (0, 0))
     button_init(dis, [yes_button, no_button])
@@ -88,16 +88,16 @@ def main_menu(screen):
     screen.blit(background_menu, (0, 0))   #отрисовка фона меню
    
     #кнопки в главном меню
-    start_button = Button("images/start_button.png", 250, 100)
-    quit_button = Button("images/quit_button.png", 250, 250)
+    start_button = Button("images/start_button.png", 400, 154)
+    quit_button = Button("images/quit_button.png", 400, 380)
 
     #кнопки управления музыкой, зависят от переменной is_music_playing
     if is_music_playing == True:
-        msc_off_button = Button("images/music_off.png", 290, 175)
-        msc_on_button = Button("images/music_on_selected.png", 209, 175)
+        msc_off_button = Button("images/music_off.png", 468, 268)
+        msc_on_button = Button("images/music_on_selected.png", 335, 268)
     else:
-        msc_off_button = Button("images/music_off_selected.png", 290, 175)
-        msc_on_button = Button("images/music_on.png", 209, 175)
+        msc_off_button = Button("images/music_off_selected.png", 468, 268)
+        msc_on_button = Button("images/music_on.png", 335, 268)
    
     #группа кнопок меню
     buttons = [start_button, quit_button, msc_on_button, msc_off_button]
