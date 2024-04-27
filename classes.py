@@ -30,37 +30,33 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.y_velocity
 
 #класс для патрулирующих врагов
+import random
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-
-        #создание изображения для спрайта
-        #self.image = pygame.Surface((32, 32))
-        #self.image.fill(RED)
+        
+        # Load image
         self.image = pygame.image.load("images/tapok.png").convert_alpha()
-
-        #начальная позиция по Х, нужна для патрулирования
-        self.x_start = x
-        #выбор направления начального движения
-        self.direction = random.choice([-1, 1])
-
-        #создание хитбокса для спрайта
+        
+        # Set initial position
         self.rect = self.image.get_rect()
         self.rect.x = x
-        self.rect.y = y-10
-
-        #компоненты скорости по оси Х и Y
-        self.x_velocity = 1
-        self.y_velocity = 0
+        self.rect.y = y - 10
+        
+        # Set initial velocity
+        self.velocity = [random.randint(-3, 3), random.randint(-3, 3)]
     
     def update(self):
-        #если расстояние от начальной точки превысило 50
-        #то меняем направление
-        if abs(self.x_start - self.rect.x) > 50:
-            self.direction *= -1
+        # Move the sprite
+        self.rect.move_ip(self.velocity)
+        
+        # Check boundaries and change trajectory if reached
+        if self.rect.left < 0 or self.rect.right > WIDTH:
+            self.velocity[0] *= -1
+        if self.rect.top < 0 or self.rect.bottom > HEIGHT:
+            self.velocity[1] *= -1
 
-        #движение спрайта по оси Х
-        self.rect.x += self.x_velocity * self.direction
 
 #класс для поднимаемых предметов
 class Collectible(pygame.sprite.Sprite):

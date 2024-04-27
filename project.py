@@ -190,6 +190,13 @@ def play_game(screen):
             platforms_list.append(Platform(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
             player_and_platforms.remove(platforms_list[0])
             player_and_platforms.add(platforms_list[-1])
+
+            collectibles_list[0].kill
+            collectibles_list.pop(0)
+            collectibles_list.append(Collectible(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+            collectibles.remove(collectibles_list[0])
+            collectibles.add(collectibles_list[-1])
+
             #hundred_points_sound.play()     
             pygame.display.update()
             start = pygame.time.get_ticks()     #начинаем отсчёт 10 секунд заново
