@@ -86,7 +86,7 @@ def main_menu(screen):
     pygame.mixer.music.rewind() #!!!!        #перезапуск музыки, если играет
     playorpause()               #!!!!        #включение либо выключение музыки
     screen.blit(background_menu, (0, 0))   #отрисовка фона меню
-   
+
     #кнопки в главном меню
     start_button = Button("images/start_button.png", 400, 154)
     quit_button = Button("images/quit_button.png", 400, 380)
@@ -202,7 +202,7 @@ def play_game(screen):
         enemies.update()
 
         #отрисовываем фон, платформы, врагов и собираемые предметы
-        screen.fill(WHITE)
+        screen.blit(background_image, (0, 0)) 
         player_and_platforms.draw(screen)
         enemies.draw(screen)
         collectibles.draw(screen)

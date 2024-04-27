@@ -1,6 +1,6 @@
 import pygame
 
-#background_image = pygame.image.load("images/background.png")
+background_image = pygame.image.load("images/back.png")
 background_menu = pygame.image.load("images/background_menu.png")
 background_the_end = pygame.image.load("images/background_the_end.png")
 #background_sleep = pygame.image.load("images/background_sleep.png")
