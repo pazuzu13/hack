@@ -35,23 +35,16 @@ import random
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        
-        # Load image
         self.image = pygame.image.load("images/tapok.png").convert_alpha()
         
-        # Set initial position
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y - 10
         
-        # Set initial velocity
         self.velocity = [random.randint(-3, 3), random.randint(-3, 3)]
     
     def update(self):
-        # Move the sprite
         self.rect.move_ip(self.velocity)
-        
-        # Check boundaries and change trajectory if reached
         if self.rect.left < 0 or self.rect.right > WIDTH:
             self.velocity[0] *= -1
         if self.rect.top < 0 or self.rect.bottom > HEIGHT:
@@ -86,3 +79,11 @@ class Platform(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        
+        self.velocity = [random.randint(-3, 3), random.randint(-3, 3)]
+    def update(self):
+        self.rect.move_ip(self.velocity)
+        if self.rect.left < 0 or self.rect.right > WIDTH:
+            self.velocity[0] *= -1
+        if self.rect.top < 0 or self.rect.bottom > HEIGHT:
+            self.velocity[1] *= -1

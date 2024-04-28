@@ -44,19 +44,19 @@ def check_collision_enemies(object, enemies_list):
             running = False
 
 #проверка 
-def check_collision_collectibles(Player, collectibles_list):
-    #если object касается collictible 
+def check_collision_collectibles(player, collectibles_list):
+    # Если player касается collectible
     for collectible in collectibles_list:
-        if Player.rect.colliderect(collectible.rect):
-            #убираем этот объект из всех групп
+        if player.rect.colliderect(collectible.rect):
+            # Убираем этот объект из всех групп
             collectible.kill()
-            #убираем этот объект из списка (чтобы не было проверки коллизии)
+            # Убираем этот объект из списка (чтобы не было проверки коллизии)
             collectibles_list.remove(collectible)
-            #прибавляем одно очко
-            return(True)
-        else:
-            return(False)
-            
+            # Прибавляем одно очко
+            return True
+    # Если ни один объект не пересекается с игроком
+    return False
+
 
 def restart_game(dis):
     pygame.mixer.music.stop() 
@@ -65,11 +65,17 @@ def restart_game(dis):
     #кнопки в меню проигрыша\рестарта
     yes_button = Button("images/yes.png", 450, 420)
     no_button = Button("images/no.png", 650, 420)
-    
+    global score_count 
     dis.blit(background_the_end, (0, 0))
     button_init(dis, [yes_button, no_button])
 
+    font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
+    score_text = font.render("Счёт: " + str(score_count), True, BLACK)
+    score_rect = score_text.get_rect() # создание хитбокса текста
+    score_rect.topleft = (511, 40) # расположение хитбокса\текста на экране
+    screen.blit(score_text, score_rect)
     while True:    #игровой цикл во время выбора продолжить\выйти при рестарте
+        score_count = 0
         pygame.display.update()                                        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -147,23 +153,27 @@ def main_menu(screen):
         pygame.time.delay(10)
 
 
-def play_game(screen):          
+def play_game(screen):
     screen.blit(background_image, (0, 0))
     global score_count
-    #создаем счетчик частоты кадров и очков
+    # Создаем счетчик частоты кадров и очков
     clock = pygame.time.Clock()
-    #создаем игрока, платформы, врагов и то, что будем собирать в игре
+    # Создаем игрока, платформы, врагов и то, что будем собирать в игре
     player = Player(400, 235)
-    platforms_list = [Platform(0, HEIGHT-25), Platform(700, 355), Platform(100, 350), Platform(400, 235), Platform(950, 223)]
+    platforms_list = [Platform(400, 235)]
+    for i in range(5):
+        platforms_list.append(Platform(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
     enemies_list = [Enemy(120, 315)]
-    collectibles_list = [Collectible(970, 210), Collectible(670, 335)]
+    collectibles_list = []
+    for i in range(5):
+        collectibles_list.append(Collectible(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
 
-    #создаем групп спрайтов
+    # Создаем группы спрайтов
     player_and_platforms = pygame.sprite.Group()
     enemies = pygame.sprite.Group()
     collectibles = pygame.sprite.Group()
 
-    #в трех циклах добавляем объекты в соответствующие группы
+    # В трех циклах добавляем объекты в соответствующие группы
     for i in enemies_list:
         enemies.add(i)
 
@@ -173,76 +183,86 @@ def play_game(screen):
     for i in collectibles_list:
         collectibles.add(i)
 
-    #отдельно добавляем игрока
+    # Отдельно добавляем игрока
     player_and_platforms.add(player)
 
     global running
-    running == True
+    running = True  # Исправлено
     start = pygame.time.get_ticks()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-        new_time = pygame.time.get_ticks()      #заканчиваем отсчёт 10 секунд
-        if (new_time - start) > 2000:          #каждые 10 секунд выполняем следующие команды
-            platforms_list[0].kill
-            platforms_list.pop(0)
-            platforms_list.append(Platform(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
-            player_and_platforms.remove(platforms_list[0])
-            player_and_platforms.add(platforms_list[-1])
+        new_time = pygame.time.get_ticks()  # Заканчиваем отсчёт 10 секунд
+        if (new_time - start) > 2000:  # Каждые 10 секунд выполняем следующие команды
+            if platforms_list:  # Проверка на пустоту списка
+                platforms_list[0].kill()  # Добавлена скобка
+                platforms_list.pop(0)
+                platforms_list.append(Platform(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+                player_and_platforms.remove(platforms_list[0])
+                player_and_platforms.add(platforms_list[-1])
 
-            collectibles_list[0].kill
-            collectibles_list.pop(0)
-            collectibles_list.append(Collectible(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
-            collectibles.remove(collectibles_list[0])
-            collectibles.add(collectibles_list[-1])
+            if collectibles_list:  # Проверка на пустоту списка
+                collectibles_list[0].kill()  # Убиваем первый элемент списка, если он существует
+                collectibles_list.pop(0)  # Удаляем первый элемент списка
+                collectibles_list.append(Collectible(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+                collectibles.remove(collectibles_list[0])
+                collectibles.add(collectibles_list[-1])
+            else:
+                collectibles_list.append(Collectible(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+                collectibles.add(collectibles_list[-1])
 
-            #hundred_points_sound.play()     
+
+            # hundred_points_sound.play()
             pygame.display.update()
-            start = pygame.time.get_ticks()     #начинаем отсчёт 10 секунд заново
-            
-        #проверяем нажатие на клавиши для перемещения
+            start = pygame.time.get_ticks()  # Начинаем отсчёт 10 секунд заново
+
+        # Проверяем нажатие на клавиши для перемещения
         keys = pygame.key.get_pressed()
         player.x_velocity = 0
         if keys[pygame.K_LEFT]:
             player.x_velocity = -5
         if keys[pygame.K_RIGHT]:
             player.x_velocity = 5
-        #условие прыжка более сложное
+        # Условие прыжка более сложное
         if keys[pygame.K_SPACE] and player.on_ground == True:
             player.y_velocity = -9
             player.on_ground = False
 
-        #гравитация для игрока
-        player.y_velocity += 0.3 
+        # Гравитация для игрока
+        player.y_velocity += 0.3
 
-        #обновляем значения атрибутов игрока и врагов
+        # Обновляем значения атрибутов игрока и врагов
         player.update()
         enemies.update()
 
-        #отрисовываем фон, платформы, врагов и собираемые предметы
+        # Отрисовываем фон, платформы, врагов и собираемые предметы
         screen.blit(background_image, (0, 0))
         player_and_platforms.draw(screen)
         enemies.draw(screen)
         collectibles.draw(screen)
         global score_count
-        #проверяем все возможные коллизии
+        # Проверяем все возможные коллизии
         check_collision_platforms(player, platforms_list)
         check_collision_enemies(player, enemies_list)
         if check_collision_collectibles(player, collectibles_list):
             score_count += 1
-        #счёт игры
-        font = pygame.font.Font(None, 36) # создание объекта, выбор размера шрифта
-        #обновление счёта на экране
+        if player.rect.centery > HEIGHT:
+            running = False
+        # Счёт игры
+        font = pygame.font.Font(None, 36)  # Создание объекта, выбор размера шрифта
+        # Обновление счёта на экране
         score_text = font.render("Счёт: " + str(score_count), True, BLACK)
-        score_rect = score_text.get_rect() # создание хитбокса текста
-        score_rect.topleft = (511, 40) # расположение хитбокса\текста на экране
+        score_rect = score_text.get_rect()  # Создание хитбокса текста
+        score_rect.topleft = (511, 40)  # Расположение хитбокса\текста на экране
         screen.blit(score_text, score_rect)
-        
-        #обновление экрана и установка частоты кадров
+
+        # Обновление экрана и установка частоты кадров
         pygame.display.update()
         clock.tick(60)
-    return(restart_game(screen))
+    return restart_game(screen)
+
+
 
 #игровой цикл
 running = True
